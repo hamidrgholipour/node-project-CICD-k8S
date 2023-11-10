@@ -1,0 +1,64 @@
+variables:
+  DOCKER_IMAGE_REPO: repo.local 
+  IMAGE_NAME: $CI_REGISTRY_IMAGE
+
+
+stages:
+  - test
+  - build
+
+run_unit_tests:
+  image: node:20.9.0-alpine3.18
+  stage: test
+  tags:
+    - local
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    paths:
+      - app/node_modules
+
+  before_script:
+    - cd app
+    - npm install
+  script:
+    - echo test
+    - npm test
+  # it create the report adter the npm test that we could download  
+  artifacts:
+    when: always
+    paths:
+      - app/junit.xml
+    reports:
+      junit: app/junit.xml
+
+
+build_image:
+  stage: build
+  tags:
+    - shell
+  image: docker:24.0.5
+  services:
+    - name:  docker:24.0.5-dind
+
+  before_script:
+    - docker info
+  script:
+    - docker build -t $DOCKER_IMAGE_REPO/node_app:v1 .
+
+
+push_image:
+  stage: build
+  dependencies:
+    - build_image
+  needs:
+    - build_image
+  tags:
+    - shell
+      #  before_script:
+          #    - export VERSION=$(cat version-file.txt)
+  script:
+    - docker push $DOCKER_IMAGE_REPO/node_app:v1
+
+
+
+
