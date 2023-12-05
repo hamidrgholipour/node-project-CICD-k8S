@@ -1,0 +1,35 @@
+// Define variable
+def myVariable = "foo"
+
+pipeline {
+  agent { label "ssh" }
+  environment {
+        DC_IMAGE_NAME = "bar"
+    }
+  stages {
+    stage('Test') {
+      steps {
+        //sh 'echo $DC_IMAGE_NAME' 
+        //sh "echo ${myVariable}"
+        //sh 'cat docker-compose.yaml'
+        //sh 'docker build -t node-app:v1 .'
+        sh 'chmod +x prepare-tests.sh'
+        sh './prepare-tests.sh'
+      }
+    }
+    stage('Build') {
+      steps {
+        sh 'echo Bulding'
+        script{
+          myapp = docker.build( "node-app:v2")
+        }
+      }
+    }
+    stage('deploy') {
+      steps {
+        sh 'echo Deploying'
+
+      }
+    }
+  }
+}
