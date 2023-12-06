@@ -2,26 +2,42 @@
 def myVariable = "foo"
 
 pipeline {
-  agent { label "ssh" }
-  environment {
-        DC_IMAGE_NAME = "bar"
-    }
+  agent any
+    
   stages {
-    stage('Test') {
-      steps {
-        //sh 'echo $DC_IMAGE_NAME' 
-        //sh "echo ${myVariable}"
-        //sh 'cat docker-compose.yaml'
-        //sh 'docker build -t node-app:v1 .'
-        sh 'chmod +x prepare-tests.sh'
-        sh './prepare-tests.sh'
+    stage('Checkout Code') {
+        agent { 
+        docker { image 'node:20.9.0-alpine3.18' }
       }
-    }
+      steps {
+        git(url: 'https://github.com/hamidrgholipour/node-project-CICD-k8S', branch: 'master')
+      }
+    }  
+    
+    stage('test') {
+        agent { 
+        docker { image 'node:20.9.0-alpine3.18' }
+      }        
+      steps {
+        sh """
+          cd app
+          npm install
+          npm run test
+        """ 
+      }
+      post {
+        always {
+            archiveArtifacts artifacts: 'app/junit.xml', fingerprint: true
+            junit 'app/junit.xml'
+            }
+        }
+    }  
     stage('Build') {
+
       steps {
         sh 'echo Bulding'
         script{
-          myapp = docker.build( "node-app:v2")
+          myapp = docker.build( "node-app:v4")
         }
       }
     }
@@ -31,5 +47,6 @@ pipeline {
 
       }
     }
+
   }
 }

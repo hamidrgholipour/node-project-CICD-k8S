@@ -23,7 +23,7 @@ run_unit_tests:
   script:
     - echo test
     - npm test
-  # it create the report adter the npm test that we could download  
+  # it create the report after the npm test that we could download  
   artifacts:
     when: always
     paths:
