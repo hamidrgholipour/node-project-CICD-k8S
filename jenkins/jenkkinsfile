@@ -64,25 +64,25 @@ pipeline {
         }
       }
     }
-    // stage('K8S') {
-    //   agent { label 'kuber' }
-    //   steps {
-    //     milestone(ordinal: null, label: "Milestone: deploy")
-    //     //terragruntInit()
-    //     sh """
-    //       kubectl apply -k ./kuber
-    //       kubectl get pod
-    //       """
-    //   }
-    // }
-    stage('Deploying React.js container to Kubernetes') {
+    stage('K8S') {
       agent { label 'kuber' }
       steps {
-        script {
-          sh 'pwd && ls -la'
-          kubernetesDeploy(configs: "./kuber/app/dp-app.yml")
-        }
+        milestone(ordinal: null, label: "Milestone: deploy")
+        //terragruntInit()
+        sh """
+          kubectl apply -k ./kuber
+          kubectl get pod
+          """
       }
     }
+    // stage('Deploying React.js container to Kubernetes') {
+    //   agent { label 'kuber' }
+    //   steps {
+    //     script {
+    //       sh 'pwd && ls -la'
+    //       kubernetesDeploy(configs: "./kuber/app/dp-app.yml")
+    //     }
+    //   }
+    // }
   }
 }
