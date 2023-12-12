@@ -71,7 +71,7 @@ pipeline {
     stage('k8s') {
       agent { label 'kuber' }
       steps {
-        sh 'pwd'
+        sh 'kubectl get nodes'
       }
     }
 
