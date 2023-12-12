@@ -64,15 +64,22 @@ pipeline {
         }
       }
     }
-    stage('K8S') {
-      agent { label 'kuber' }
+    // stage('K8S') {
+    //   agent { label 'kuber' }
+    //   steps {
+    //     milestone(ordinal: null, label: "Milestone: deploy")
+    //     //terragruntInit()
+    //     sh """
+    //       kubectl apply -k ./kuber
+    //       kubectl get pod
+    //       """
+    //   }
+    // }
+    stage('Deploying React.js container to Kubernetes') {
       steps {
-        milestone(ordinal: null, label: "Milestone: deploy")
-        //terragruntInit()
-        sh """
-          kubectl apply -k ./kuber
-          kubectl get pod
-          """
+        script {
+          kubernetesDeploy(configs: "./kuber/app/dp-app.yml")
+        }
       }
     }
   }
