@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-app
+  labels:
+    app: node-app
+spec:
+  selector:
+    matchLabels:
+      app: node-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: node-app
+    spec:
+      containers:
+        - name: apnode-appp
+          image: node-app:v2
+          ports:
+          - name: node-app-port
+            containerPort: 3000
+          resources:
+            limits:
+              cpu: "1"
+            requests:
+              cpu: 200m    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-app-service
+spec:
+  ports:
+  - port: 3000
+    targetPort: node-app-port
+    protocol: TCP
+  selector:
+    app: node-app
+  type: ClusterIP
