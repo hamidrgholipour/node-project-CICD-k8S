@@ -79,6 +79,7 @@ pipeline {
       agent { label 'kuber' }
       steps {
         script {
+          sh 'pwd && ls -la'
           kubernetesDeploy(configs: "./kuber/app/dp-app.yml")
         }
       }
