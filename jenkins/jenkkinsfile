@@ -76,7 +76,10 @@ pipeline {
     stage('k8s') {
       agent { label 'kuber' }
       steps {
-        sh 'kubectl get nodes'
+        sh '''
+          kubectl apply -k ./kuber
+          kubectl get pod
+          '''
       }
     }
 
