@@ -3,7 +3,7 @@
 
 pipeline {
   agent any
-  
+
   options {
     timestamps()
     timeout(time: 2, unit: 'HOURS')
@@ -16,6 +16,7 @@ pipeline {
   stages {
     stage('Checkout Code') {
       steps {
+        milestone(ordinal: null, label: "Milestone: Checkout")
         git(url: 'https://github.com/hamidrgholipour/node-project-CICD-k8S', branch: 'master')
       }
     }  
@@ -24,11 +25,13 @@ pipeline {
         docker { image 'node:20.9.0-alpine3.18' }
       }
       steps {
+        milestone(ordinal: null, label: "Milestone: PreTest")
         sh 'node --version'
       }
     }  
     stage('Test') {
       steps {
+        milestone(ordinal: null, label: "Milestone: Test")
         //sh 'echo $DC_IMAGE_NAME' 
         //sh "echo ${myVariable}"
         //sh 'cat docker-compose.yaml'
@@ -39,6 +42,7 @@ pipeline {
     }
     stage('Build') {
       steps {
+        milestone(ordinal: null, label: "Milestone: Build")
         sh 'echo Bulding'
         script{
           myapp = docker.build( "${DC_IMAGE_NAME}:v${ARTVERSION}")
@@ -47,9 +51,14 @@ pipeline {
     }
     stage('deploy') {
       steps {
+        milestone(ordinal: null, label: "Milestone: deploy")
         sh 'echo Deploying'
+        //terragruntInit()
 
       }
     }
+
+
+
   }
 }
