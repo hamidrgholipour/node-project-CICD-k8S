@@ -40,12 +40,23 @@ pipeline {
         sh './prepare-tests.sh'
       }
     }
+
+    // stage('trivy') {
+    //     agent { 
+    //     docker { image 'aquasec/trivy:latest' }
+    //   }
+    //   steps {
+    //     sh 'version'
+    //   }
+    // }   
+
     stage('Build') {
       steps {
         milestone(ordinal: null, label: "Milestone: Build")
         sh 'echo Bulding'
         script{
-          myapp = docker.build( "${DC_IMAGE_NAME}:v${ARTVERSION}")
+          //myapp = docker.build( "${DC_IMAGE_NAME}:v${ARTVERSION}")
+          myapp = docker.build( "node-app:v2")
         }
       }
     }
