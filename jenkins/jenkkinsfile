@@ -76,6 +76,7 @@ pipeline {
     //   }
     // }
     stage('Deploying React.js container to Kubernetes') {
+      agent { label 'kuber' }
       steps {
         script {
           kubernetesDeploy(configs: "./kuber/app/dp-app.yml")
