@@ -21,12 +21,12 @@ pipeline {
         git(url: 'https://github.com/hamidrgholipour/node-project-CICD-k8S', branch: 'master')
       }
     }  
-    // stage('test') {
+    // stage('Test') {
     //     agent { 
     //     docker { image 'node:20.9.0-alpine3.18' }
     //   }        
     //   steps {
-    //     milestone(ordinal: null, label: "Milestone: test")
+    //     milestone(ordinal: null, label: "Milestone: Test")
     //     sh """
     //       cd app
     //       npm install
@@ -60,11 +60,11 @@ pipeline {
           //   myapp.push("${ARTVERSION}")
           //     }
           //myapp = docker.build( "${DOCKER_IMAGE_REPO}/${DC_IMAGE_NAME}:v${ARTVERSION}")
-          myapp = docker.build( "node-app:v1")
+          myapp = docker.build( "node-app:v2")
         }
       }
     }
-    stage('k8s') {
+    stage('K8S') {
       agent { label 'kuber' }
       steps {
         milestone(ordinal: null, label: "Milestone: deploy")
