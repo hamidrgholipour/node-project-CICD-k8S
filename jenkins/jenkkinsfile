@@ -4,7 +4,7 @@ def myVariable = "foo"
 pipeline {
   agent any
   environment {
-        DC_IMAGE_NAME = "app"
+        DC_IMAGE_NAME = "node-app"
         ARTVERSION = "${env.BUILD_ID}"
     }
   stages {
@@ -36,7 +36,7 @@ pipeline {
       steps {
         sh 'echo Bulding'
         script{
-          myapp = docker.build( "node-app:v2")
+          myapp = docker.build( "${DC_IMAGE_NAME}:v${ARTVERSION}")
         }
       }
     }
