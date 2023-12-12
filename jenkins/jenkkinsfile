@@ -21,21 +21,12 @@ pipeline {
         git(url: 'https://github.com/hamidrgholipour/node-project-CICD-k8S', branch: 'master')
       }
     }  
-    stage('PreTest'){
-        agent { 
-        docker { image 'node:20.9.0-alpine3.18' }
-      }
-      steps {
-        milestone(ordinal: null, label: "Milestone: PreTest")
-        sh 'node --version'
-      }
-    }  
     stage('test') {
         agent { 
         docker { image 'node:20.9.0-alpine3.18' }
       }        
       steps {
-        milestone(ordinal: null, label: "Milestone: PreTest")
+        milestone(ordinal: null, label: "Milestone: test")
         sh """
           cd app
           npm install
