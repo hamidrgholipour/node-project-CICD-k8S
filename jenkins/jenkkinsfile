@@ -30,16 +30,24 @@ pipeline {
         sh 'node --version'
       }
     }  
-    stage('Test') {
+    stage('test') {
+        agent { 
+        docker { image 'node:20.9.0-alpine3.18' }
+      }        
       steps {
-        milestone(ordinal: null, label: "Milestone: Test")
-        //sh 'echo $DC_IMAGE_NAME' 
-        //sh "echo ${myVariable}"
-        //sh 'cat docker-compose.yaml'
-        //sh 'docker build -t node-app:v1 .'
-        sh 'chmod +x prepare-tests.sh'
-        sh './prepare-tests.sh'
+        milestone(ordinal: null, label: "Milestone: PreTest")
+        sh """
+          cd app
+          npm install
+          npm run test
+        """ 
       }
+      post {
+        always {
+            archiveArtifacts artifacts: 'app/junit.xml', fingerprint: true
+            junit 'app/junit.xml'
+            }
+        }
     }
 
     // stage('trivy') {
@@ -65,24 +73,16 @@ pipeline {
         }
       }
     }
-    stage('deploy') {
-      steps {
-        milestone(ordinal: null, label: "Milestone: deploy")
-        sh 'echo Deploying'
-        //terragruntInit()
-
-      }
-    }
     stage('k8s') {
       agent { label 'kuber' }
       steps {
-        sh '''
+        milestone(ordinal: null, label: "Milestone: deploy")
+        //terragruntInit()
+        sh """
           kubectl apply -k ./kuber
           kubectl get pod
-          '''
+          """
       }
     }
-
-
   }
 }
