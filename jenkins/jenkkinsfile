@@ -1,8 +1,14 @@
 // Define variable
-def myVariable = "foo"
+//def myVariable = "foo"
 
 pipeline {
   agent any
+  
+  options {
+    timestamps()
+    timeout(time: 2, unit: 'HOURS')
+  }
+
   environment {
         DC_IMAGE_NAME = "node-app"
         ARTVERSION = "${env.BUILD_ID}"
@@ -11,7 +17,6 @@ pipeline {
     stage('Checkout Code') {
       steps {
         git(url: 'https://github.com/hamidrgholipour/node-project-CICD-k8S', branch: 'master')
-        sh 'ls -la && pwd'
       }
     }  
     stage('PreTest'){
