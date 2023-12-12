@@ -3,41 +3,40 @@ def myVariable = "foo"
 
 pipeline {
   agent any
-    
+  environment {
+        DC_IMAGE_NAME = "app"
+        ARTVERSION = "${env.BUILD_ID}"
+    }
   stages {
     stage('Checkout Code') {
-        agent { 
-        docker { image 'node:20.9.0-alpine3.18' }
-      }
       steps {
         git(url: 'https://github.com/hamidrgholipour/node-project-CICD-k8S', branch: 'master')
+        sh 'ls -la && pwd'
       }
     }  
-    
-    stage('test') {
+    stage('PreTest'){
         agent { 
         docker { image 'node:20.9.0-alpine3.18' }
-      }        
-      steps {
-        sh """
-          cd app
-          npm install
-          npm run test
-        """ 
       }
-      post {
-        always {
-            archiveArtifacts artifacts: 'app/junit.xml', fingerprint: true
-            junit 'app/junit.xml'
-            }
-        }
+      steps {
+        sh 'node --version'
+      }
     }  
+    stage('Test') {
+      steps {
+        //sh 'echo $DC_IMAGE_NAME' 
+        //sh "echo ${myVariable}"
+        //sh 'cat docker-compose.yaml'
+        //sh 'docker build -t node-app:v1 .'
+        sh 'chmod +x prepare-tests.sh'
+        sh './prepare-tests.sh'
+      }
+    }
     stage('Build') {
-
       steps {
         sh 'echo Bulding'
         script{
-          myapp = docker.build( "node-app:v4")
+          myapp = docker.build( "node-app:v2")
         }
       }
     }
@@ -47,6 +46,5 @@ pipeline {
 
       }
     }
-
   }
 }
