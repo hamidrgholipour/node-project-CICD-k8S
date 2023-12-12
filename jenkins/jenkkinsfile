@@ -12,6 +12,7 @@ pipeline {
   environment {
         DC_IMAGE_NAME = "node-app"
         ARTVERSION = "${env.BUILD_ID}"
+        DOCKER_IMAGE_REPO = "repo.local"
     }
   stages {
     stage('Checkout Code') {
@@ -55,7 +56,11 @@ pipeline {
         milestone(ordinal: null, label: "Milestone: Build")
         sh 'echo Bulding'
         script{
-          //myapp = docker.build( "${DC_IMAGE_NAME}:v${ARTVERSION}")
+          // docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+          //   myapp.push("latest")
+          //   myapp.push("${ARTVERSION}")
+          //     }
+          //myapp = docker.build( "${DOCKER_IMAGE_REPO}/${DC_IMAGE_NAME}:v${ARTVERSION}")
           myapp = docker.build( "node-app:v2")
         }
       }
