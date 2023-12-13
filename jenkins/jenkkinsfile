@@ -11,7 +11,8 @@ pipeline {
 
   environment {
         DC_IMAGE_NAME       = "node-app"
-        ARTVERSION          = "${env.BUILD_ID}"
+        // ARTVERSION       = "${env.BUILD_ID}"
+        ARTVERSION          = "v1"
         DOCKER_IMAGE_REPO   = "repo.local"
         CHART_NAME          = "hamid-node"
     }
@@ -51,26 +52,27 @@ pipeline {
     //   }
     // }   
 
-    // stage('Build') {
-    //   steps {
-    //     milestone(ordinal: null, label: "Milestone: Build")
-    //     sh 'echo Bulding'
-    //     script{
-    //       // docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-    //       //   myapp.push("latest")
-    //       //   myapp.push("${ARTVERSION}")
-    //       //     }
-    //       //myapp = docker.build( "${DOCKER_IMAGE_REPO}/${DC_IMAGE_NAME}:v${ARTVERSION}")
-    //       myapp = docker.build( "node-app:v2")
-    //     }
-    //   }
-    // }
+    stage('Build') {
+      steps {
+        milestone(ordinal: null, label: "Milestone: Build")
+        sh 'echo Bulding'
+        script{
+          // docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+          //   myapp.push("latest")
+          //   myapp.push("${ARTVERSION}")
+          //     }
+          //myapp = docker.build( "${DOCKER_IMAGE_REPO}/${DC_IMAGE_NAME}:${ARTVERSION}")
+          myapp = docker.build( "${DC_IMAGE_NAME}:${ARTVERSION}")
+        }
+      }
+    }
     stage('change helm variable'){
       agent { label 'kuber-ssh' }
       steps {
 
               sh '''
-                echo "changing"
+                echo "changing version"
+                sed -i 's/tag: "${ARTVERSION}"/tag: "${ARTVERSION}"/' kuber-helm/values.yaml
               '''
 
       }
@@ -81,9 +83,7 @@ pipeline {
         milestone(ordinal: null, label: "Milestone: K8S helm")
         //terragruntInit()
         sh '''
-          ls -la
-          kubectl get pod
-           export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
           helm list
           helm upgrade hamid-node ./kuber-helm/ --install
           '''
