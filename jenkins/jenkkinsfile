@@ -10,9 +10,10 @@ pipeline {
   }
 
   environment {
-        DC_IMAGE_NAME = "node-app"
-        ARTVERSION = "${env.BUILD_ID}"
-        DOCKER_IMAGE_REPO = "repo.local"
+        DC_IMAGE_NAME       = "node-app"
+        ARTVERSION          = "${env.BUILD_ID}"
+        DOCKER_IMAGE_REPO   = "repo.local"
+        CHART_NAME          = "hamid-node"
     }
   stages {
     stage('Checkout Code') {
@@ -64,15 +65,25 @@ pipeline {
         }
       }
     }
-    stage('K8S') {
+    stage('K8S helm') {
       agent { label 'kuber' }
       steps {
-        milestone(ordinal: null, label: "Milestone: deploy")
+        milestone(ordinal: null, label: "Milestone: K8S helm")
         //terragruntInit()
-        sh """
-          kubectl apply -k ./kuber
-          kubectl get pod
-          """
+        // sh """
+        //   helm install ${CHART_NAME} ./kuber-helm/
+        //   kubectl get pod
+        //   """
+        script{
+          // Check if Helm chart exists
+          def chartExists = sh(script: "helm search repo ${CHART_NAME}", returnStatus: true)
+            if (chartExists == 0) {
+              echo "Helm chart ${CHART_NAME} exists."
+              sh 'helm upgrade ${CHART_NAME} '
+            } else {
+              error "Helm chart ${CHART_NAME} not found."
+              sh 'helm install ${CHART_NAME} ./kuber-helm/'          
+        }  
       }
     }
     // stage('Deploying React.js container to Kubernetes') {
