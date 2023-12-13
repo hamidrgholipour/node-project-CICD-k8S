@@ -12,7 +12,7 @@ pipeline {
   environment {
         DC_IMAGE_NAME       = "node-app"
         // ARTVERSION       = "${env.BUILD_ID}"
-        ARTVERSION          = "v1"
+        ARTVERSION          = "v2"
         DOCKER_IMAGE_REPO   = "repo.local"
         CHART_NAME          = "hamid-node"
     }
