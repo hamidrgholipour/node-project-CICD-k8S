@@ -83,6 +83,7 @@ pipeline {
             } else {
               error "Helm chart ${CHART_NAME} not found."
               sh 'helm install ${CHART_NAME} ./kuber-helm/'          
+            }
         }  
       }
     }
