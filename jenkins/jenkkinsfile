@@ -62,7 +62,7 @@ pipeline {
     //       //   myapp.push("${ARTVERSION}")
     //       //     }
     //       //myapp = docker.build( "${DOCKER_IMAGE_REPO}/${DC_IMAGE_NAME}:${ARTVERSION}")
-    //       myapp = docker.build( "${DC_IMAGE_NAME}:${ARTVERSION}")
+    //       myapp = docker.build( "${DC_IMAGE_NAME}:${ARTVERSION}","${DC_IMAGE_NAME}:latest")
     //     }
     //   }
     // }
