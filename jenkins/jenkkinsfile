@@ -69,12 +69,10 @@ pipeline {
     stage('change helm variable'){
       agent { label 'kuber-ssh' }
       steps {
-
               sh '''
                 echo "changing version"
                 sed -i 's/tag: "${ARTVERSION}"/tag: "${ARTVERSION}"/' kuber-helm/values.yaml
               '''
-
       }
     }
     stage('K8S helm') {
@@ -82,7 +80,10 @@ pipeline {
       steps {
         milestone(ordinal: null, label: "Milestone: K8S helm")
         //terragruntInit()
+        
         sh '''
+          echo "changing version"
+          sed -i 's/tag: "${ARTVERSION}"/tag: "${ARTVERSION}"/' kuber-helm/values.yaml
           export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
           helm list
           helm upgrade hamid-node ./kuber-helm/ --install
