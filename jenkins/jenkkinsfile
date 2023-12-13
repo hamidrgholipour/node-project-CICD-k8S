@@ -80,12 +80,12 @@ pipeline {
       steps {
         milestone(ordinal: null, label: "Milestone: K8S helm")
         //terragruntInit()
-        sh """
+        sh '''
           ls -la
           kubectl get pod
-          helm upgrade ${CHART_NAME} ./kuber-helm/ --install
-          
-          """
+          helm list
+          helm upgrade hamid-node ./kuber-helm/ --install
+          '''
       }
     }
     // stage('Deploying React.js container to Kubernetes') {
