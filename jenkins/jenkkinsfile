@@ -12,7 +12,7 @@ pipeline {
   environment {
         DC_IMAGE_NAME       = "node-app"
         // ARTVERSION       = "${env.BUILD_ID}"
-        ARTVERSION          = "v2"
+        ARTVERSION          = "v3"
         DOCKER_IMAGE_REPO   = "repo.local"
         CHART_NAME          = "hamid-node"
     }
@@ -52,20 +52,20 @@ pipeline {
     //   }
     // }   
 
-    // stage('Build') {
-    //   steps {
-    //     milestone(ordinal: null, label: "Milestone: Build")
-    //     sh 'echo Bulding'
-    //     script{
-    //       // docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-    //       //   myapp.push("latest")
-    //       //   myapp.push("${ARTVERSION}")
-    //       //     }
-    //       //myapp = docker.build( "${DOCKER_IMAGE_REPO}/${DC_IMAGE_NAME}:${ARTVERSION}")
-    //       myapp = docker.build( "${DC_IMAGE_NAME}:${ARTVERSION}","${DC_IMAGE_NAME}:latest")
-    //     }
-    //   }
-    // }
+    stage('Build') {
+      steps {
+        milestone(ordinal: null, label: "Milestone: Build")
+        sh 'echo Bulding'
+        script{
+          // docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+          //   myapp.push("latest")
+          //   myapp.push("${ARTVERSION}")
+          //     }
+          //myapp = docker.build( "${DOCKER_IMAGE_REPO}/${DC_IMAGE_NAME}:${ARTVERSION}")
+          myapp = docker.build( "${DC_IMAGE_NAME}:${ARTVERSION}","${DC_IMAGE_NAME}:latest")
+        }
+      }
+    }
 
     stage('change helm variable'){
       agent { label 'kuber-ssh' }
