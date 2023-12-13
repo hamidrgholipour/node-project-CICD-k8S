@@ -71,7 +71,7 @@ pipeline {
         milestone(ordinal: null, label: "Milestone: K8S helm")
         //terragruntInit()
         sh """
-          helm install ${CHART_NAME} ./kuber-helm/ --install
+          helm upgrade ${CHART_NAME} ./kuber-helm/ --install
           kubectl get pod
           """
       }
