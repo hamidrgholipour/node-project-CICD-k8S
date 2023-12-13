@@ -12,7 +12,7 @@ pipeline {
   environment {
         DC_IMAGE_NAME       = "node-app"
         // ARTVERSION       = "${env.BUILD_ID}"
-        ARTVERSION          = "v3"
+        ARTVERSION          = "v1"
         DOCKER_IMAGE_REPO   = "repo.local"
         CHART_NAME          = "hamid-node"
     }
@@ -74,7 +74,7 @@ pipeline {
               sh '''
                 echo "changing version"
                 cat kuber-helm/values.yaml | grep "tag:"
-                sed -i 's/tag: ".*"/tag: "v3"/' kuber-helm/values.yaml
+                sed -i 's/tag: ".*"/tag: "${ARTVERSION}"/' kuber-helm/values.yaml
                 cat kuber-helm/values.yaml | grep "tag:"
               '''
       }
