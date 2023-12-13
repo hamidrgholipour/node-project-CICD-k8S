@@ -11,7 +11,7 @@ pipeline {
 
   environment {
         DC_IMAGE_NAME       = "node-app"
-        ARTVERSION       = "${env.BUILD_ID}"
+        //ARTVERSION       = "${env.BUILD_ID}"
         ARTVERSION          = "v1"
         DOCKER_IMAGE_REPO   = "repo.local"
         CHART_NAME          = "hamid-node"
@@ -23,25 +23,25 @@ pipeline {
         git(url: 'https://github.com/hamidrgholipour/node-project-CICD-k8S', branch: 'master')
       }
     }  
-    // stage('Test') {
-    //     agent { 
-    //     docker { image 'node:20.9.0-alpine3.18' }
-    //   }        
-    //   steps {
-    //     milestone(ordinal: null, label: "Milestone: Test")
-    //     sh """
-    //       cd app
-    //       npm install
-    //       npm run test
-    //     """ 
-    //   }
-    //   post {
-    //     always {
-    //         archiveArtifacts artifacts: 'app/junit.xml', fingerprint: true
-    //         junit 'app/junit.xml'
-    //         }
-    //     }
-    // }
+    stage('Test') {
+        agent { 
+        docker { image 'node:20.9.0-alpine3.18' }
+      }        
+      steps {
+        milestone(ordinal: null, label: "Milestone: Test")
+        sh """
+          cd app
+          npm install
+          npm run test
+        """ 
+      }
+      post {
+        always {
+            archiveArtifacts artifacts: 'app/junit.xml', fingerprint: true
+            junit 'app/junit.xml'
+            }
+        }
+    }
 
     // stage('trivy') {
     //     agent { 
@@ -52,33 +52,33 @@ pipeline {
     //   }
     // }   
 
-    // stage('Build') {
-    //   steps {
-    //     milestone(ordinal: null, label: "Milestone: Build")
-    //     sh 'echo Bulding'
-    //     script{
-    //       // docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-    //       //   myapp.push("latest")
-    //       //   myapp.push("${ARTVERSION}")
-    //       //     }
-    //       //myapp = docker.build( "${DOCKER_IMAGE_REPO}/${DC_IMAGE_NAME}:${ARTVERSION}")
-    //       myapp = docker.build( "${DC_IMAGE_NAME}:${ARTVERSION}")
-    //       myapp = docker.build( "${DC_IMAGE_NAME}:latest")
-    //     }
-    //   }
-    // }
-
-    stage('change helm variable'){
-      agent { label 'kuber-ssh' }
+    stage('Build') {
       steps {
-              sh '''
-                echo "changing version"
-                cat kuber-helm/values.yaml | grep "tag:"
-                sed -i 's/tag: ".*"/tag: "${ARTVERSION}"/' kuber-helm/values.yaml
-                cat kuber-helm/values.yaml | grep "tag:"
-              '''
+        milestone(ordinal: null, label: "Milestone: Build")
+        sh 'echo Bulding'
+        script{
+          // docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+          //   myapp.push("latest")
+          //   myapp.push("${ARTVERSION}")
+          //     }
+          //myapp = docker.build( "${DOCKER_IMAGE_REPO}/${DC_IMAGE_NAME}:${ARTVERSION}")
+          myapp = docker.build( "${DC_IMAGE_NAME}:${ARTVERSION}")
+          myapp = docker.build( "${DC_IMAGE_NAME}:latest")
+        }
       }
     }
+
+    // stage('change helm variable'){
+    //   agent { label 'kuber-ssh' }
+    //   steps {
+    //           sh '''
+    //             echo "changing version"
+    //             cat kuber-helm/values.yaml | grep "tag:"
+    //             sed -i 's/tag: ".*"/tag: "${ARTVERSION}"/' kuber-helm/values.yaml
+    //             cat kuber-helm/values.yaml | grep "tag:"
+    //           '''
+    //   }
+    // }
 
     stage('K8S helm') {
       agent { label 'kuber-ssh' }
@@ -97,14 +97,6 @@ pipeline {
           '''
       }
     }
-    // stage('Deploying React.js container to Kubernetes') {
-    //   agent { label 'kuber' }
-    //   steps {
-    //     script {
-    //       sh 'pwd && ls -la'
-    //       kubernetesDeploy(configs: "./kuber/app/dp-app.yml")
-    //     }
-    //   }
-    // }
+
   }
 }
