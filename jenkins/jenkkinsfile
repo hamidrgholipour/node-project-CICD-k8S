@@ -68,16 +68,17 @@ pipeline {
       }
     }
 
-    stage('change helm variable'){
-      agent { label 'kuber-ssh' }
-      steps {
-              sh '''
-                // echo "changing version"
-                // sed -i 's/tag: "${ARTVERSION}"/tag: "${ARTVERSION}"/' kuber-helm/values.yaml
-                // sed -i 's/replicaCount: [0-9]*/replicaCount: 5/' kuber-helm/values.yaml
-              '''
-      }
-    }
+    // stage('change helm variable'){
+    //   agent { label 'kuber-ssh' }
+    //   steps {
+    //           sh '''
+    //             // echo "changing version"
+    //             // sed -i 's/tag: "${ARTVERSION}"/tag: "${ARTVERSION}"/' kuber-helm/values.yaml
+    //             // sed -i 's/replicaCount: [0-9]*/replicaCount: 5/' kuber-helm/values.yaml
+    //           '''
+    //   }
+    // }
+    
     stage('K8S helm') {
       agent { label 'kuber-ssh' }
       steps {
