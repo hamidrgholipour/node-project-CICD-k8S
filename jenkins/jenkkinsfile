@@ -83,6 +83,7 @@ pipeline {
         sh '''
           ls -la
           kubectl get pod
+           export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
           helm list
           helm upgrade hamid-node ./kuber-helm/ --install
           '''
