@@ -87,7 +87,7 @@ pipeline {
         sh '''
           echo "changing version"
           // sed -i 's/tag: "${ARTVERSION}"/tag: "${ARTVERSION}"/' kuber-helm/values.yaml
-          sed -i 's/replicaCount: [0-9]*/replicaCount: 5/' kuber-helm/values.yaml
+          //sed -i 's/replicaCount: [0-9]*/replicaCount: 5/' kuber-helm/values.yaml
           export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
           helm list
           helm upgrade hamid-node ./kuber-helm/ --install
