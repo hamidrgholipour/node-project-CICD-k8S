@@ -70,8 +70,9 @@ pipeline {
       agent { label 'kuber-ssh' }
       steps {
               sh '''
-                echo "changing version"
-                sed -i 's/tag: "${ARTVERSION}"/tag: "${ARTVERSION}"/' kuber-helm/values.yaml
+                // echo "changing version"
+                // sed -i 's/tag: "${ARTVERSION}"/tag: "${ARTVERSION}"/' kuber-helm/values.yaml
+                sed -i 's/replicaCount: 3/replicaCount: 1/' kuber-helm/values.yaml
               '''
       }
     }
@@ -83,7 +84,8 @@ pipeline {
         
         sh '''
           echo "changing version"
-          sed -i 's/tag: "${ARTVERSION}"/tag: "${ARTVERSION}"/' kuber-helm/values.yaml
+          // sed -i 's/tag: "${ARTVERSION}"/tag: "${ARTVERSION}"/' kuber-helm/values.yaml
+          // sed -i 's/replicaCount: 3/replicaCount: 3/' kuber-helm/values.yaml
           export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
           helm list
           helm upgrade hamid-node ./kuber-helm/ --install
