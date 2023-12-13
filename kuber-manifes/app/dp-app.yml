@@ -20,8 +20,8 @@ spec:
         app: node-app
     spec:
       containers:
-        - name: apnode-appp
-          image: node-app:v1
+        - name: node-app
+          image: node-app:v2
           ports:
           - name: node-app-port
             containerPort: 3000
