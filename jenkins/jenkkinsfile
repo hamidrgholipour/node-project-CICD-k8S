@@ -87,6 +87,7 @@ pipeline {
         
         sh '''
           echo "changing version"
+          pwd
           // sed -i 's/tag: "${ARTVERSION}"/tag: "${ARTVERSION}"/' kuber-helm/values.yaml
           //sed -i 's/replicaCount: [0-9]*/replicaCount: 5/' kuber-helm/values.yaml
           //export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
