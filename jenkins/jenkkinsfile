@@ -74,7 +74,7 @@ pipeline {
               sh '''
                 echo "changing version"
                 cat kuber-helm/values.yaml | grep "tag:"
-                sed -i 's/tag\s*:\s*".*"/tag: "${ARTVERSION}"/'  kuber-helm/values.yaml
+                sed -i 's/tag: ".*"/tag: "v3"/' kuber-helm/values.yaml
                 cat kuber-helm/values.yaml | grep "tag:"
               '''
       }
