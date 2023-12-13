@@ -65,12 +65,21 @@ pipeline {
         }
       }
     }
+    stager('change helm variable'){
+      agent { label 'kuber-ssh' }
+      steps {
+
+
+
+      }
+    }
     stage('K8S helm') {
       agent { label 'kuber-ssh' }
       steps {
         milestone(ordinal: null, label: "Milestone: K8S helm")
         //terragruntInit()
         sh """
+          ls -la
           kubectl get pod
           helm upgrade ${CHART_NAME} ./kuber-helm/ --install
           
