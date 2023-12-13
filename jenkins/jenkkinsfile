@@ -77,7 +77,7 @@ pipeline {
         script{
           // Check if Helm chart exists
           def chartExists = sh(script: "helm search repo ${CHART_NAME}", returnStatus: true)
-            if (chartExists == 0) {
+            if (chartExists == 1) {
               echo "Helm chart ${CHART_NAME} exists."
               sh 'helm upgrade ${CHART_NAME} ./kuber-helm/'
             } else {
